@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mesam Beşyol Diş Kliniği</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Global scroll behavior */
+    html {
+      scroll-behavior: smooth;
+    }
+    .fade-in-section {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      will-change: opacity, transform;
+    }
+    .fade-in-section.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .content-fade {
+      transition: opacity 300ms ease-in-out;
+    }
+    .content-fading-out {
+      opacity: 0;
+    }
+    /* Hero Slider Text Animation */
+    .hero-text-container > * {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    }
+    .hero-text-container.visible > h1 {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 200ms;
+    }
+    .hero-text-container.visible > p {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 400ms;
+    }
+    .hero-text-container.visible > div { /* The CTA button container */
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 600ms;
+    }
+    /* Section Title Animation */
+    .section-title-wrapper > * {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    .section-title-wrapper.is-visible > h2 {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 100ms;
+    }
+    .section-title-wrapper.is-visible > p {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 250ms;
+    }
+    .section-title-wrapper.is-visible > .divider-container {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 400ms;
+    }
+    /* Accordion Styles */
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease-in-out;
+    }
+    .accordion-content.open {
+      max-height: 500px; /* Adjust if content is taller */
+    }
+    .accordion-icon {
+      transition: transform 0.4s ease;
+    }
+    .accordion-icon.open {
+      transform: rotate(180deg);
+    }
+    /* Before & After Slider */
+    .comparison-slider {
+      --position: 50%;
+    }
+    .comparison-slider .after-image {
+      clip-path: polygon(0 0, var(--position) 0, var(--position) 100%, 0 100%);
+    }
+    .comparison-slider .slider-handle {
+      left: var(--position);
+    }
+    /* Spinner for AI */
+    .spinner {
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      width: 2rem; /* 32px */
+      height: 2rem; /* 32px */
+      border-radius: 50%;
+      border-left-color: #0D9488; /* brand-teal */
+      animation: spin 1s ease infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    /* FAQ Accordion in Service Details */
+    details.faq-item {
+      background-color: #F9FAFB; /* gray-50 */
+      border-radius: 0.5rem;
+      margin-bottom: 0.75rem;
+      border: 1px solid #E5E7EB; /* gray-200 */
+    }
+    details.faq-item summary {
+      padding: 1rem;
+      font-weight: 600;
+      color: #005A9C; /* brand-blue */
+      cursor: pointer;
+      list-style: none; /* Remove default marker */
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background-color 0.2s ease;
+    }
+     details.faq-item summary:hover {
+      background-color: #F3F4F6; /* gray-100 */
+    }
+    details.faq-item summary::-webkit-details-marker {
+      display: none; /* Hide Safari marker */
+    }
+    details.faq-item summary::after {
+      content: '+';
+      font-size: 1.5rem;
+      font-weight: 400;
+      color: #0D9488; /* brand-teal */
+      transition: transform 0.3s ease;
+    }
+    details.faq-item[open] summary {
+      border-bottom: 1px solid #E5E7EB;
+    }
+    details.faq-item[open] summary::after {
+      transform: rotate(45deg);
+    }
+    details.faq-item .faq-answer {
+      padding: 1rem;
+      color: #4B5563; /* gray-600 */
+      line-height: 1.6;
+    }
+
+    /* WhatsApp FAB Styles */
+    .whatsapp-fab {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      width: 3.5rem; /* 56px */
+      height: 3.5rem; /* 56px */
+      border-radius: 9999px;
+      background-color: #25D366; /* WhatsApp Green */
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 1000;
+      border: none;
+    }
+    .whatsapp-fab:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+      background-color: #128C7E; /* Darker WhatsApp Green */
+    }
+
+    /* Navbar Link Underline Animation */
+    .nav-link-desktop {
+      position: relative;
+    }
+    .nav-link-desktop::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      transform: scaleX(0);
+      height: 2px;
+      bottom: -4px;
+      left: 0;
+      background-color: #0D9488; /* brand-teal */
+      transform-origin: bottom right;
+      transition: transform 0.25s ease-out;
+    }
+    .nav-link-desktop:hover::after {
+      transform: scaleX(1);
+      transform-origin: bottom left;
+    }
+
+    /* CTA Pulse Animation */
+    .cta-pulse {
+      animation: cta-pulse-animation 2.5s infinite;
+    }
+    @keyframes cta-pulse-animation {
+      0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.7);
+      }
+      70% {
+        transform: scale(1.03);
+        box-shadow: 0 0 0 10px rgba(13, 148, 136, 0);
+      }
+      100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(13, 148, 136, 0);
+      }
+    }
+    #kvkk-article h2 {
+      text-align: center; color: #005A9C; font-size: 1.875rem; font-weight: 700; margin-bottom: 2rem !important;
+    }
+    #kvkk-article h3 {
+      color: #1F2937; font-size: 1.5rem; font-weight: 600; margin-top: 2.5rem !important; margin-bottom: 1.5rem !important;
+      border-bottom: 1px solid #E5E7EB; padding-bottom: 0.5rem;
+    }
+    #kvkk-article h4 {
+      color: #374151; font-size: 1.25rem; font-weight: 600; margin-top: 2rem !important; margin-bottom: 1rem !important;
+    }
+    #kvkk-article p {
+      line-height: 1.75 !important; margin-bottom: 1.25rem !important; text-align: justify !important;
+    }
+    #kvkk-article ul > li, #kvkk-article ol > li {
+      margin-bottom: 1rem !important;
+    }
+    #bolum1, #bolum2, #bolum3, #bolum4, #bolum5, #bolum6, #bolum7 {
+      scroll-margin-top: 140px !important;
+    }
+    /* Instagram Feed Hover */
+    .instagram-post .overlay {
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+    }
+    .instagram-post:hover .overlay {
+      opacity: 1;
+    }
+    @keyframes pulse-white-animation {
+      0%, 100% {
+        opacity: 0.85;
+        text-shadow: 0 0 5px rgba(255, 255, 255, 0.6);
+      }
+      50% {
+        opacity: 1;
+        text-shadow: 0 0 12px rgba(255, 255, 255, 1);
+      }
+    }
+    .pulse-white {
+      animation: pulse-white-animation 2.5s ease-in-out infinite;
+    }
+  </style>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Montserrat', 'sans-serif'],
+          },
+          fontSize: {
+            xs: '0.75rem',     // 12px
+            sm: '0.8125rem',   // 13px
+            base: '0.875rem',   // 14px
+            lg: '1.125rem',    // 18px
+            xl: '1.375rem',    // 22px
+            '2xl': '1.75rem',   // 28px
+            '3xl': '2.125rem',  // 34px
+            '4xl': '2.625rem',  // 42px
+            '5xl': '3.25rem',   // 52px
+            '6xl': '4rem',      // 64px
+          },
+          colors: {
+            'brand-blue': '#005A9C', 'brand-blue-light': '#E0F2FE', 'brand-teal': '#0D9488',
+            'brand-cyan-light': '#BDE3E1', 'brand-blue-pastel': '#D3DEF0',
+            'stone-100': '#F5F5F4', 'slate-900': '#0F172A',
+          },
+          typography: ({ theme }) => ({
+            DEFAULT: {
+              css: {
+                maxWidth: '3xl', // Narrower line length for better readability
+                color: theme('colors.gray.600'),
+                'h2': {
+                  fontSize: theme('fontSize.2xl'),
+                  fontWeight: '700',
+                  color: theme('colors.brand-blue'),
+                  marginTop: theme('spacing.12'),
+                  marginBottom: theme('spacing.6'),
+                },
+                'h3': {
+                  fontSize: theme('fontSize.xl'),
+                  fontWeight: '600',
+                  color: theme('colors.slate.800'),
+                  marginTop: theme('spacing.10'),
+                  marginBottom: theme('spacing.4'),
+                },
+                'ul': {
+                  listStyleType: 'disc',
+                  marginTop: theme('spacing.6'),
+                  marginBottom: theme('spacing.8'),
+                  paddingLeft: theme('spacing.8'),
+                },
+                'ol': {
+                  listStyleType: 'decimal',
+                  marginTop: theme('spacing.6'),
+                  marginBottom: theme('spacing.8'),
+                  paddingLeft: theme('spacing.8'),
+                },
+                'li': {
+                  marginTop: '0',
+                  marginBottom: theme('spacing.6'),
+                },
+                'li > p': {
+                    marginTop: '0',
+                    marginBottom: '0',
+                },
+                'li::marker': {
+                  color: theme('colors.brand-teal'),
+                },
+                'p': {
+                  fontSize: theme('fontSize.base'),
+                  lineHeight: '1.8',
+                  marginTop: theme('spacing.4'),
+                  marginBottom: theme('spacing.8'),
+                  textAlign: 'justify',
+                },
+                'a': {
+                  color: theme('colors.brand-teal'),
+                  fontWeight: '600',
+                  transition: 'color 0.2s ease-in-out',
+                  textDecoration: 'none',
+                  '&:hover': {
+                    color: theme('colors.brand-blue'),
+                    textDecoration: 'underline',
+                  }
+                }
+              },
+            },
+          }),
+        }
+      },
+      plugins: [
+        function({ addComponents, theme }) {
+            const proseStyles = theme('typography.DEFAULT.css');
+            // This is a bit of a hack because we can't use child selectors in the config object keys.
+            // We are adding this rule manually to ensure paragraphs inside list items don't create double margins.
+            proseStyles['li > p'] = {
+                marginTop: 0,
+                marginBottom: 0,
+            };
+            addComponents({
+                '.prose': proseStyles,
+            });
+        },
+      ],
+    }
+  </script>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.1.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
+    "react/": "https://esm.sh/react@^19.1.0/",
+    "@google/genai": "https://esm.sh/@google/genai",
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.6.2",
+    "vite": "https://esm.sh/vite@^7.1.3",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.0.1"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="text-base">
+  <noscript>Bu uygulamayı çalıştırmak için JavaScript'i etkinleştirmeniz gerekir.</noscript>
+  <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
